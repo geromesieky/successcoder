@@ -1,18 +1,36 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { deleteCourse } from '../redux/actions/actionDeleteCourse';
 import { EmptyMsg } from '../components/EmptyMsg';
 import globalStyles from '../styles/globalStyles';
 import { AntDesign } from '@expo/vector-icons';
 
 const UserCourses = ({ navigation }) => {
 
-  const existingCourses = useSelector(state => state.courses.existingCourses);
+  const dispatch = useDispatch();
 
-  if (existingCourses.length > 0) {
+  const handleDeleteCourse = (courseId) => {
+    Alert.alert(
+      'ATTENTION',
+      'Voulez-vous supprimer ce cours ?',
+      [
+        { text: 'NON' },
+        { 
+          text: 'OUI',
+          onPress: () => dispatch(deleteCourse(courseId))
+        }
+      ]
+    )
+    
+  }
+
+  const loggedInmemberCourses = useSelector(state => state.courses.loggedInmemberCourses);
+
+  if (loggedInmemberCourses.length > 0) {
     return (
       <FlatList
-        data={existingCourses}
+        data={loggedInmemberCourses}
         keyExtractor={ item => item.id }
         renderItem={({ item }) => (
           <View style={styles.courseContainer}>
@@ -32,7 +50,7 @@ const UserCourses = ({ navigation }) => {
                 <AntDesign name="edit" size={24} color={globalStyles.green} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => alert('Effacer le cours')}
+                onPress={() => handleDeleteCourse(item.id)}
                 style={styles.touchableIcon}
               >
                 <AntDesign name="delete" size={24} color={globalStyles.green} />

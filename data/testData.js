@@ -8,7 +8,7 @@ const COURSES = [
     image: 'https://cdn.pixabay.com/photo/2018/05/18/15/30/web-design-3411373__340.jpg',
     price: 99.99,
     selected: false,
-    instructorId: '1'
+    instructorId: '2'
   }, 
   {
     id: '2',
@@ -26,7 +26,7 @@ const COURSES = [
     image: 'https://cdn.pixabay.com/photo/2018/05/18/16/25/statistics-3411473__340.jpg',
     price: 29.49,
     selected: false,
-    instructorId: '1'
+    instructorId: '5'
   }, 
   {
     id: '4',

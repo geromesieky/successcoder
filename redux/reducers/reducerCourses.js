@@ -1,8 +1,9 @@
 import COURSES from '../../data/testData';
-import { ADD_TO_CART, REMOVE_COURSE_CART } from '../constants';
+import { ADD_TO_CART, REMOVE_COURSE_CART, DELETE_COURSE } from '../constants';
 
 const initialState = {
-    existingCourses: COURSES
+    existingCourses: COURSES,
+    loggedInmemberCourses: COURSES.filter( course => course.instructorId === '1')
 }
 
 const reducerCourses = (state = initialState, action) => {
@@ -14,7 +15,8 @@ const reducerCourses = (state = initialState, action) => {
             copyExistingCourses[indexCourseToModify].selected = true;
             return {
                 ...state,
-                existingCourses: copyExistingCourses
+                existingCourses: copyExistingCourses,
+                loggedInmemberCourses: state.loggedInmemberCourses
             }
 
         case REMOVE_COURSE_CART:
@@ -23,7 +25,15 @@ const reducerCourses = (state = initialState, action) => {
             copyExistingCoursesRemoved[indexCourseToDeleteFromCart].selected = false;
             return {
                 ...state,
-                existingCourses: copyExistingCoursesRemoved
+                existingCourses: copyExistingCoursesRemoved,
+                loggedInmemberCourses: state.loggedInmemberCourses
+            }
+        
+        case DELETE_COURSE:
+            return {
+                ...state,
+                existingCourses: state.existingCourses.filter( course => course.id !== action.courseId),
+                loggedInmemberCourses: state.loggedInmemberCourses.filter( course => course.id !== action.courseId)
             }
     
         default:
