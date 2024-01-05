@@ -1,5 +1,13 @@
+import CourseModel from '../../data/CourseModel';
 import COURSES from '../../data/testData';
-import { ADD_TO_CART, REMOVE_COURSE_CART, DELETE_COURSE } from '../constants';
+
+import { 
+    ADD_TO_CART, 
+    REMOVE_COURSE_CART, 
+    DELETE_COURSE,
+    EDIT_COURSE,
+    CREATE_COURSE
+} from '../constants';
 
 const initialState = {
     existingCourses: COURSES,
@@ -35,7 +43,51 @@ const reducerCourses = (state = initialState, action) => {
                 existingCourses: state.existingCourses.filter( course => course.id !== action.courseId),
                 loggedInmemberCourses: state.loggedInmemberCourses.filter( course => course.id !== action.courseId)
             }
-    
+        
+        case EDIT_COURSE:
+            const idCourse = action.courseId;
+            const indexCourseToUpdate = state.loggedInmemberCourses.findIndex(course => course.id === idCourse);
+            
+            const updatedCourse = new CourseModel(
+                idCourse, 
+                action.updatedCourse.title, 
+                action.updatedCourse.description, 
+                action.updatedCourse.image, 
+                state.loggedInmemberCourses[indexCourseToUpdate].price,
+                state.loggedInmemberCourses[indexCourseToUpdate].selected,
+                state.loggedInmemberCourses[indexCourseToUpdate].instructorId,
+            )
+
+            const newLoggedInmemberCourses = [...state.loggedInmemberCourses];
+            newLoggedInmemberCourses[indexCourseToUpdate] = updatedCourse;
+
+            const indexExistingCourses = state.existingCourses.findIndex(course => course.id === idCourse);
+            const newExistingCourses = [...state.existingCourses];
+            newExistingCourses[indexExistingCourses] = updatedCourse;
+
+            return {
+                ...state,
+                existingCourses: newExistingCourses,
+                loggedInmemberCourses: newLoggedInmemberCourses
+            }
+        
+        case CREATE_COURSE:
+            const newCourse = new CourseModel(
+                Date.now().toString(),
+                action.newCourse.title,
+                action.newCourse.description,
+                action.newCourse.image,
+                action.newCourse.price,
+                false,
+                '1'
+            );
+
+            return {
+                ...state,
+                existingCourses: state.existingCourses.concat(newCourse),
+                loggedInmemberCourses: state.loggedInmemberCourses.concat(newCourse)
+            }
+
         default:
             return state;
     }
